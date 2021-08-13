@@ -10,28 +10,28 @@ namespace MikyM.Common.DataAccessLayer.Repositories
 {
     public abstract class Repository<TEntity> : ReadOnlyRepository<TEntity>, IRepository<TEntity> where TEntity : AggregateRootEntity
     {
-        protected Repository(Microsoft.EntityFrameworkCore.DbContext context) : base(context)
+        protected Repository(DbContext context) : base(context)
         {
         }
 
         public virtual async Task AddAsync(TEntity entity)
         {
-            await _context.Set<TEntity>().AddAsync(entity);
+            await _set.AddAsync(entity);
         }
 
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {
-            await _context.Set<TEntity>().AddRangeAsync(entities);
+            await _set.AddRangeAsync(entities);
         }
 
         public virtual void AddOrUpdate(TEntity entity)
         {
-            _context.Set<TEntity>().Update(entity);
+            _set.Update(entity);
         }
 
         public virtual void AddOrUpdateRange(IEnumerable<TEntity> entities)
         {
-            _context.Set<TEntity>().UpdateRange(entities);
+            _set.UpdateRange(entities);
         }
 
         public virtual void Update(TEntity entity)
@@ -50,24 +50,24 @@ namespace MikyM.Common.DataAccessLayer.Repositories
 
         public virtual void Delete(TEntity entity)
         {
-            _context.Set<TEntity>().Remove(entity);
+            _set.Remove(entity);
         }
 
         public virtual void Delete(long id)
         {
             var entity = _context.FindTracked<TEntity>(id) ?? (TEntity) Activator.CreateInstance(typeof(TEntity), id);
-            _context.Set<TEntity>().Remove(entity);
+            _set.Remove(entity);
         }
 
         public virtual void DeleteRange(IEnumerable<TEntity> entities)
         {
-            _context.Set<TEntity>().RemoveRange(entities);
+            _set.RemoveRange(entities);
         }
 
         public virtual void DeleteRange(IEnumerable<long> ids)
         {
             var entities = ids.Select(id => _context.FindTracked<TEntity>(id) ?? (TEntity) Activator.CreateInstance(typeof(TEntity), id)).ToList();
-            _context.Set<TEntity>().RemoveRange(entities);
+            _set.RemoveRange(entities);
         }
     }
 }
