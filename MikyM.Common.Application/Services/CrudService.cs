@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace MikyM.Common.Application.Services
 {
-    public class CrudService<TEntity, T, TContext> : ReadOnlyService<TEntity, T, TContext>, ICrudService<TEntity, T> where TEntity : AggregateRootEntity where T : class where TContext : DbContext
+    public abstract class CrudService<TEntity, T, TContext> : ReadOnlyService<TEntity, T, TContext>, ICrudService<TEntity, T> where TEntity : AggregateRootEntity where T : class where TContext : DbContext
     {
-        public CrudService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
+        protected CrudService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
         {
         }
 

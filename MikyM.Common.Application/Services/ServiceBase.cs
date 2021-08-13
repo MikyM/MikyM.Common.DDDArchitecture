@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace MikyM.Common.Application.Services
 {
-    public class ServiceBase<TContext> : IServiceBase where TContext : DbContext
+    public abstract class ServiceBase<TContext> : IServiceBase where TContext : DbContext
     {
         protected readonly IMapper _mapper;
         protected readonly IUnitOfWork<TContext> _unitOfWork;
 
-        public ServiceBase(IMapper mapper, IUnitOfWork<TContext> uof)
+        protected ServiceBase(IMapper mapper, IUnitOfWork<TContext> uof)
         {
             _mapper = mapper;
             _unitOfWork = uof;

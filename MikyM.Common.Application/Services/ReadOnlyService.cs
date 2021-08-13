@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace MikyM.Common.Application.Services
 {
-    public class ReadOnlyService<TEntity, TResult, TContext> : ServiceBase<TContext>, IReadOnlyService<TEntity, TResult> where TEntity : AggregateRootEntity where TResult : class where TContext : DbContext
+    public abstract class ReadOnlyService<TEntity, TResult, TContext> : ServiceBase<TContext>, IReadOnlyService<TEntity, TResult> where TEntity : AggregateRootEntity where TResult : class where TContext : DbContext
     {
-        public ReadOnlyService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
+        protected ReadOnlyService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
         {
         }
 
