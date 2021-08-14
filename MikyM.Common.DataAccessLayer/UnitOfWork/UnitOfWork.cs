@@ -38,15 +38,13 @@ namespace MikyM.Common.DataAccessLayer.UnitOfWork
             {
                 string concreteName = concrete.FullName;
                 if (_repositories.TryGetValue(concreteName, out var concreteRepo)) return (TRepository)concreteRepo;
-                var concreteArgs = new object[] { Context };
-                if (_repositories.TryAdd(concreteName, (TRepository)Activator.CreateInstance(concrete, concreteArgs)))
+                if (_repositories.TryAdd(concreteName, (TRepository)Activator.CreateInstance(concrete, Context)))
                     return (TRepository)_repositories[concreteName];
                 throw new ArgumentException(
                     $"Concrete repository of type {concreteName} couldn't be added to and/or retrieved from cache.");
             }
 
-            var args = new object[] { Context };
-            if (_repositories.TryAdd(name, (TRepository)Activator.CreateInstance(type, args))) return (TRepository)_repositories[name];
+            if (_repositories.TryAdd(name, (TRepository)Activator.CreateInstance(type, Context))) return (TRepository)_repositories[name];
             throw new ArgumentException(
                 $"Concrete repository of type {name} couldn't be added to and/or retrieved from cache.");
         }
