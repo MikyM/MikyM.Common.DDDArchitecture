@@ -6,7 +6,7 @@ using MikyM.Common.Domain.Entities;
 
 namespace MikyM.Common.DataAccessLayer.Repositories
 {
-    public interface IReadOnlyRepository<TEntity> where TEntity : AggregateRootEntity
+    public interface IReadOnlyRepository<TEntity> : IBaseRepository where TEntity : AggregateRootEntity
     {
         ValueTask<TEntity> GetAsync(params object[] keyValues);
         Task<IReadOnlyList<TEntity>> GetBySpecificationsAsync(PaginationFilter filter,

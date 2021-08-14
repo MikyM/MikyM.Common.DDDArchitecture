@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MikyM.Common.Application.Services
 {
-    public abstract class ReadOnlyService<TEntity, TResult, TContext> : ServiceBase<TContext>, IReadOnlyService<TEntity, TResult> where TEntity : AggregateRootEntity where TResult : class where TContext : DbContext
+    public class ReadOnlyService<TEntity, TResult, TContext> : ServiceBase<TContext>, IReadOnlyService<TEntity, TResult> where TEntity : AggregateRootEntity where TResult : class where TContext : DbContext
     {
         protected ReadOnlyService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
         {
@@ -19,19 +19,19 @@ namespace MikyM.Common.Application.Services
 
         public async Task<TResult> GetAsync(long id)
         {
-            return _mapper.Map<TResult>(await _unitOfWork.GetRepository<TEntity, ReadOnlyRepository<TEntity>>().GetAsync(id));
+            return _mapper.Map<TResult>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().GetAsync(id));
         }
 
         public async Task<TGetResult> GetAsync<TGetResult>(long id) where TGetResult : AggregateRootEntity
         {
-            return _mapper.Map<TGetResult>(await _unitOfWork.GetRepository<TEntity, ReadOnlyRepository<TEntity>>().GetAsync(id));
+            return _mapper.Map<TGetResult>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().GetAsync(id));
         }
 
         public async Task<IReadOnlyList<TResult>> GetBySpecificationsAsync(ISpecifications<TEntity> specifications = null)
         {
             return _mapper.Map<IReadOnlyList<TResult>>(
                 await _unitOfWork
-                    .GetRepository<TEntity, ReadOnlyRepository<TEntity>>()
+                    .GetRepository<ReadOnlyRepository<TEntity>>()
                     .GetBySpecificationsAsync(specifications));
         }
 
@@ -39,7 +39,7 @@ namespace MikyM.Common.Application.Services
         {
             return _mapper.Map<IReadOnlyList<TGetResult>>(
                 await _unitOfWork
-                    .GetRepository<TEntity, ReadOnlyRepository<TEntity>>()
+                    .GetRepository<ReadOnlyRepository<TEntity>>()
                     .GetBySpecificationsAsync(specifications));
         }
 
@@ -47,7 +47,7 @@ namespace MikyM.Common.Application.Services
         {
             return _mapper.Map<IReadOnlyList<TResult>>(
                 await _unitOfWork
-                    .GetRepository<TEntity, ReadOnlyRepository<TEntity>>()
+                    .GetRepository<ReadOnlyRepository<TEntity>>()
                     .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications));
         }
 
@@ -55,24 +55,24 @@ namespace MikyM.Common.Application.Services
         {
             return _mapper.Map<IReadOnlyList<TGetResult>>(
                 await _unitOfWork
-                    .GetRepository<TEntity, ReadOnlyRepository<TEntity>>()
+                    .GetRepository<ReadOnlyRepository<TEntity>>()
                     .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications));
         }
 
         public async Task<long> CountAsync()
         {
-            return await _unitOfWork.GetRepository<TEntity, ReadOnlyRepository<TEntity>>().CountAsync();
+            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().CountAsync();
         }
 
         public async Task<long> CountWhereAsync(ISpecifications<TEntity> specifications = null)
         {
-            return await _unitOfWork.GetRepository<TEntity, ReadOnlyRepository<TEntity>>()
+            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
                 .CountWhereAsync(specifications);
         }
 
         public async Task<long> CountWhereAsync<TGetResult>(ISpecifications<TEntity> specifications = null) where TGetResult : AggregateRootEntity
         {
-            return await _unitOfWork.GetRepository<TEntity, ReadOnlyRepository<TEntity>>()
+            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
                 .CountWhereAsync(specifications);
         }
     }

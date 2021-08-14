@@ -9,7 +9,7 @@ using MikyM.Common.Domain.Entities;
 
 namespace MikyM.Common.DataAccessLayer.Repositories
 {
-    public abstract class ReadOnlyRepository<TEntity> : IReadOnlyRepository<TEntity> where TEntity : AggregateRootEntity
+    public class ReadOnlyRepository<TEntity> : IReadOnlyRepository<TEntity> where TEntity : AggregateRootEntity
     {
         protected DbContext _context;
         protected readonly DbSet<TEntity> _set;
