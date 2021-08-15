@@ -13,7 +13,7 @@ namespace MikyM.Common.DataAccessLayer.Helpers
         {
             CachedTypes ??= AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(x => x.GetTypes()
-                    .Where(t => t.BaseType == typeof(Repository<>) || t.BaseType == typeof(ReadOnlyRepository<>)))
+                    .Where(t => t.BaseType == typeof(Repository<>) || t.BaseType == typeof(ReadOnlyRepository<>) || t == typeof(ReadOnlyRepository<>)))
                 .ToList();
         }
     }
