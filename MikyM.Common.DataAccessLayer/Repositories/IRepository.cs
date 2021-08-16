@@ -16,5 +16,9 @@ namespace MikyM.Common.DataAccessLayer.Repositories
         void Delete(long id);
         void DeleteRange(IEnumerable<TEntity> entities);
         void DeleteRange(IEnumerable<long> ids);
+        void Disable(TEntity entity);
+        Task DisableAsync(long id);
+        void DisableRange(IEnumerable<TEntity> entities);
+        Task DisableRangeAsync(IEnumerable<long> ids);
     }
 }

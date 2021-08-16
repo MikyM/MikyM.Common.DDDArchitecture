@@ -69,5 +69,35 @@ namespace MikyM.Common.DataAccessLayer.Repositories
             var entities = ids.Select(id => _context.FindTracked<TEntity>(id) ?? (TEntity) Activator.CreateInstance(typeof(TEntity), id)).ToList();
             _set.RemoveRange(entities);
         }
+
+        public virtual void Disable(TEntity entity)
+        {
+            entity.IsDisabled = true;
+            Update(entity);
+        }
+
+        public virtual async Task DisableAsync(long id)
+        {
+            var entity = await GetAsync(id);
+            entity.IsDisabled = true;
+            Update(entity);
+        }
+
+        public virtual void DisableRange(IEnumerable<TEntity> entities)
+        {
+            var aggregateRootEntities = entities.ToList();
+            foreach (var entity in aggregateRootEntities)
+            {
+                entity.IsDisabled = true;
+            }
+            UpdateRange(aggregateRootEntities);
+        }
+
+        public virtual async Task DisableRangeAsync(IEnumerable<long> ids)
+        {
+            var entities = await _set.Join(ids, ent => ent.Id, id => id, (ent, id) => ent).ToListAsync();
+            entities.ForEach(ent => ent.IsDisabled = true);
+            UpdateRange(entities);
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace MikyM.Common.Domain.Entities
         public virtual TId Id { get; protected set; }
         public virtual DateTime CreatedAt { get; } = DateTime.UtcNow;
         public virtual DateTime? UpdatedAt { get; }
+        public virtual bool IsDisabled { get; set; }
 
         protected Entity()
         {
