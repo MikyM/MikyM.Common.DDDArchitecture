@@ -3,10 +3,11 @@ using MikyM.Common.DataAccessLayer.Specifications;
 using MikyM.Common.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MikyM.Common.Application.Interfaces
 {
-    public interface IReadOnlyService<TEntity> : IServiceBase where TEntity : AggregateRootEntity
+    public interface IReadOnlyService<TEntity, TContext> : IServiceBase where TEntity : AggregateRootEntity where TContext : DbContext
     {
         Task<TGetResult> GetAsync<TGetResult>(long id) where TGetResult : class;
 
