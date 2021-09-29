@@ -16,8 +16,6 @@ namespace MikyM.Common.Application.Interfaces
         Task<IReadOnlyList<TGetResult>> GetBySpecificationsAsync<TGetResult>(PaginationFilterDto filter,
             ISpecifications<TEntity> specifications = null) where TGetResult : class;
 
-        Task<long> CountAsync();
-        Task<long> CountWhereAsync(ISpecifications<TEntity> specifications = null);
-        Task<long> CountWhereAsync<TGetResult>(ISpecifications<TEntity> specifications = null) where TGetResult : class;
+        Task<long> LongCountAsync(ISpecifications<TEntity> specifications = null);
     }
 }

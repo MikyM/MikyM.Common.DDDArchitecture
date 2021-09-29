@@ -6,30 +6,32 @@ namespace MikyM.Common.Application.Interfaces
 {
     public interface ICrudService<TEntity> : IReadOnlyService<TEntity> where TEntity : AggregateRootEntity
     {
-        Task<long> AddAsync<TPost>(TPost addObject, bool shouldSave = false) where TPost : class;
-        Task<bool> UpdateAsync<TPatch>(TPatch patchObject, bool shouldSave = false) where TPatch : class;
+        Task<long> AddAsync<TPost>(TPost entry, bool shouldSave = false) where TPost : class;
+        Task<IEnumerable<long>> AddRangeAsync<TPost>(IEnumerable<TPost> entries, bool shouldSave = false) where TPost : class;
 
-        Task<bool> UpdateRangeAsync<TPatch>(IEnumerable<TPatch> patchObjects, bool shouldSave = false)
+        Task UpdateAsync<TPatch>(TPatch entry, bool shouldSave = false) where TPatch : class;
+
+        Task UpdateRangeAsync<TPatch>(IEnumerable<TPatch> entries, bool shouldSave = false)
             where TPatch : class;
 
-        Task<long> AddOrUpdateAsync<TPut>(TPut putObject, bool shouldSave = false) where TPut : class;
+        Task<long> AddOrUpdateAsync<TPut>(TPut entry, bool shouldSave = false) where TPut : class;
 
-        Task<List<long>> AddOrUpdateRangeAsync<TPut>(IEnumerable<TPut> putObjects, bool shouldSave = false)
+        Task<List<long>> AddOrUpdateRangeAsync<TPut>(IEnumerable<TPut> entries, bool shouldSave = false)
             where TPut : class;
 
-        Task<bool> DeleteAsync<TDelete>(TDelete deleteObject, bool shouldSave = false) where TDelete : class;
-        Task<bool> DeleteAsync(long id, bool shouldSave = false);
+        Task DeleteAsync<TDelete>(TDelete entry, bool shouldSave = false) where TDelete : class;
+        Task DeleteAsync(long id, bool shouldSave = false);
 
-        Task<bool> DeleteRangeAsync<TDelete>(IEnumerable<TDelete> deleteObjects, bool shouldSave = false)
+        Task DeleteRangeAsync<TDelete>(IEnumerable<TDelete> entries, bool shouldSave = false)
             where TDelete : class;
 
-        Task<bool> DeleteRangeAsync(IEnumerable<long> ids, bool shouldSave = false);
-        Task<bool> DisableAsync<TDisable>(TDisable deleteObject, bool shouldSave = false) where TDisable : class;
-        Task<bool> DisableAsync(long id, bool shouldSave = false);
+        Task DeleteRangeAsync(IEnumerable<long> ids, bool shouldSave = false);
+        Task DisableAsync<TDisable>(TDisable entry, bool shouldSave = false) where TDisable : class;
+        Task DisableAsync(long id, bool shouldSave = false);
 
-        Task<bool> DisableRangeAsync<TDisable>(IEnumerable<TDisable> deleteObjects, bool shouldSave = false)
+        Task DisableRangeAsync<TDisable>(IEnumerable<TDisable> entries, bool shouldSave = false)
             where TDisable : class;
 
-        Task<bool> DisableRangeAsync(IEnumerable<long> ids, bool shouldSave = false);
+        Task DisableRangeAsync(IEnumerable<long> ids, bool shouldSave = false);
     }
 }

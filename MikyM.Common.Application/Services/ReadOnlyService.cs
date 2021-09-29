@@ -37,20 +37,9 @@ namespace MikyM.Common.Application.Services
                 .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications));
         }
 
-        public virtual async Task<long> CountAsync()
+        public virtual async Task<long> LongCountAsync(ISpecifications<TEntity> specifications = null)
         {
-            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().CountAsync();
-        }
-
-        public virtual async Task<long> CountWhereAsync(ISpecifications<TEntity> specifications = null)
-        {
-            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().CountWhereAsync(specifications);
-        }
-
-        public virtual async Task<long> CountWhereAsync<TGetResult>(ISpecifications<TEntity> specifications = null)
-            where TGetResult : class
-        {
-            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().CountWhereAsync(specifications);
+            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().LongCountAsync(specifications);
         }
     }
 }
