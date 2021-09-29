@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MikyM.Common.Application.Interfaces
 {
-    public interface IReadOnlyService<TEntity, TContext> : IServiceBase where TEntity : AggregateRootEntity where TContext : DbContext
+    public interface IReadOnlyService<TEntity, TContext> : IServiceBase<TContext> where TEntity : AggregateRootEntity where TContext : DbContext
     {
         Task<TGetResult> GetAsync<TGetResult>(long id) where TGetResult : class;
 
