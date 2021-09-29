@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MikyM.Common.Application.Services
 {
-    public abstract class ServiceBase<TContext> : IServiceBase where TContext : DbContext
+    public abstract class ServiceBase<TContext> : IServiceBase<TContext> where TContext : DbContext
     {
         protected readonly IMapper _mapper;
         protected readonly IUnitOfWork<TContext> _unitOfWork;
