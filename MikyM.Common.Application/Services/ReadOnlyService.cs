@@ -1,4 +1,21 @@
-﻿using AutoMapper;
+﻿// This file is part of Lisbeth.Bot project
+//
+// Copyright (C) 2021 MikyM
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+// 
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MikyM.Common.Application.Interfaces;
 using MikyM.Common.DataAccessLayer.Filters;
@@ -20,21 +37,33 @@ namespace MikyM.Common.Application.Services
 
         public virtual async Task<TGetResult> GetAsync<TGetResult>(long id) where TGetResult : class
         {
-            return _mapper.Map<TGetResult>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().GetAsync(id));
+            if (typeof(TGetResult) != typeof(TEntity))
+                return _mapper.Map<TGetResult>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
+                    .GetAsync(id));
+
+            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>().GetAsync(id) as TGetResult;
         }
 
         public virtual async Task<IReadOnlyList<TGetResult>> GetBySpecificationsAsync<TGetResult>(
             ISpecifications<TEntity> specifications = null) where TGetResult : class
         {
-            return _mapper.Map<IReadOnlyList<TGetResult>>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
-                .GetBySpecificationsAsync(specifications));
+            if (typeof(TGetResult) != typeof(TEntity))
+                return _mapper.Map<IReadOnlyList<TGetResult>>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
+                    .GetBySpecificationsAsync(specifications));
+
+            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
+                .GetBySpecificationsAsync(specifications) as IReadOnlyList<TGetResult>;
         }
 
         public virtual async Task<IReadOnlyList<TGetResult>> GetBySpecificationsAsync<TGetResult>(
             PaginationFilterDto filter, ISpecifications<TEntity> specifications = null) where TGetResult : class
         {
-            return _mapper.Map<IReadOnlyList<TGetResult>>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
-                .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications));
+            if (typeof(TGetResult) != typeof(TEntity))
+                return _mapper.Map<IReadOnlyList<TGetResult>>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
+                    .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications));
+
+            return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
+                .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications) as IReadOnlyList<TGetResult>;
         }
 
         public virtual async Task<long> LongCountAsync(ISpecifications<TEntity> specifications = null)
