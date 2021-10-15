@@ -1,4 +1,4 @@
-﻿// This file is part of Lisbeth.Bot project
+﻿// This file is part of MikyM.Common.DDDArchitecture project
 //
 // Copyright (C) 2021 MikyM
 // 
@@ -33,11 +33,6 @@ namespace MikyM.Common.Domain.Entities
 
     public abstract class Entity<TId>
     {
-        public virtual TId Id { get; protected set; }
-        public virtual DateTime? CreatedAt { get; set; }
-        public virtual DateTime? UpdatedAt { get; set; }
-        public virtual bool IsDisabled { get; set; }
-
         protected Entity()
         {
             CreatedAt ??= DateTime.UtcNow;
@@ -50,6 +45,11 @@ namespace MikyM.Common.Domain.Entities
             UpdatedAt ??= CreatedAt;
             Id = id;
         }
+
+        public virtual TId Id { get; protected set; }
+        public virtual DateTime? CreatedAt { get; set; }
+        public virtual DateTime? UpdatedAt { get; set; }
+        public virtual bool IsDisabled { get; set; }
 
         public override string ToString()
         {

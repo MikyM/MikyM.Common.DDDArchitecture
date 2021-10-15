@@ -1,4 +1,4 @@
-﻿// This file is part of Lisbeth.Bot project
+﻿// This file is part of MikyM.Common.DDDArchitecture project
 //
 // Copyright (C) 2021 MikyM
 // 
@@ -26,6 +26,7 @@ namespace MikyM.Common.DataAccessLayer.Repositories
     public interface IReadOnlyRepository<TEntity> : IBaseRepository where TEntity : AggregateRootEntity
     {
         ValueTask<TEntity> GetAsync(params object[] keyValues);
+
         Task<IReadOnlyList<TEntity>> GetBySpecificationsAsync(PaginationFilter filter,
             ISpecifications<TEntity> specifications = null);
 

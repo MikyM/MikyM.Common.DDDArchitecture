@@ -1,4 +1,4 @@
-﻿// This file is part of Lisbeth.Bot project
+﻿// This file is part of MikyM.Common.DDDArchitecture project
 //
 // Copyright (C) 2021 MikyM
 // 
@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MikyM.Common.Application.Interfaces;
@@ -23,8 +25,6 @@ using MikyM.Common.DataAccessLayer.Repositories;
 using MikyM.Common.DataAccessLayer.Specifications;
 using MikyM.Common.DataAccessLayer.UnitOfWork;
 using MikyM.Common.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MikyM.Common.Application.Services
 {
@@ -48,7 +48,8 @@ namespace MikyM.Common.Application.Services
             ISpecifications<TEntity> specifications = null) where TGetResult : class
         {
             if (typeof(TGetResult) != typeof(TEntity))
-                return _mapper.Map<IReadOnlyList<TGetResult>>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
+                return _mapper.Map<IReadOnlyList<TGetResult>>(await _unitOfWork
+                    .GetRepository<ReadOnlyRepository<TEntity>>()
                     .GetBySpecificationsAsync(specifications));
 
             return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
@@ -59,11 +60,13 @@ namespace MikyM.Common.Application.Services
             PaginationFilterDto filter, ISpecifications<TEntity> specifications = null) where TGetResult : class
         {
             if (typeof(TGetResult) != typeof(TEntity))
-                return _mapper.Map<IReadOnlyList<TGetResult>>(await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
+                return _mapper.Map<IReadOnlyList<TGetResult>>(await _unitOfWork
+                    .GetRepository<ReadOnlyRepository<TEntity>>()
                     .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications));
 
             return await _unitOfWork.GetRepository<ReadOnlyRepository<TEntity>>()
-                .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications) as IReadOnlyList<TGetResult>;
+                    .GetBySpecificationsAsync(_mapper.Map<PaginationFilter>(filter), specifications) as
+                IReadOnlyList<TGetResult>;
         }
 
         public virtual async Task<long> LongCountAsync(ISpecifications<TEntity> specifications = null)
