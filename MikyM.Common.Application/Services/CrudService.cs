@@ -1,4 +1,4 @@
-﻿// This file is part of MikyM.Common.DDDArchitecture project
+﻿// This file is part of Lisbeth.Bot project
 //
 // Copyright (C) 2021 Krzysztof Kupisz - MikyM
 // 
@@ -15,222 +15,216 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MikyM.Common.Application.Interfaces;
-using MikyM.Common.DataAccessLayer.Repositories;
-using MikyM.Common.DataAccessLayer.UnitOfWork;
-using MikyM.Common.Domain.Entities;
+using MikyM.Common.Application.Results;
 
-namespace MikyM.Common.Application.Services
+namespace MikyM.Common.Application.Services;
+
+public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TContext>, ICrudService<TEntity, TContext>
+    where TEntity : AggregateRootEntity where TContext : DbContext
 {
-    public class CrudService<TEntity, TContext> : ReadOnlyService<TEntity, TContext>, ICrudService<TEntity, TContext>
-        where TEntity : AggregateRootEntity where TContext : DbContext
+    public CrudService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
     {
-        public CrudService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
+    }
+
+    public virtual async Task<Result<long>> AddAsync<TPost>(TPost entry, bool shouldSave = false, string? userId = null) where TPost : class
+    {
+        if (entry  is null) throw new ArgumentNullException(nameof(entry));
+
+        TEntity entity;
+        if (entry is TEntity rootEntity)
         {
+            entity = rootEntity;
+            UnitOfWork.GetRepository<IRepository<TEntity>>().Add(entity);
+        }
+        else
+        {
+            entity = Mapper.Map<TEntity>(entry);
+            UnitOfWork.GetRepository<IRepository<TEntity>>().Add(entity);
         }
 
-        public virtual async Task<long> AddAsync<TPost>(TPost entry, bool shouldSave = false) where TPost : class
+        if (!shouldSave) return 0;
+        await CommitAsync(userId);
+        return Result<long>.FromSuccess(entity.Id);
+    }
+
+    public virtual async Task<Result<IEnumerable<long>>> AddRangeAsync<TPost>(IEnumerable<TPost> entries,
+        bool shouldSave = false, string? userId = null) where TPost : class
+    {
+        if (entries  is null) throw new ArgumentNullException(nameof(entries));
+
+        List<TEntity> entities;
+
+        if (entries is IEnumerable<TEntity> rootEntities)
         {
-            if (entry is null) throw new ArgumentNullException(nameof(entry));
-
-            TEntity entity;
-
-            if (entry is TEntity rootEntity)
-            {
-                entity = rootEntity;
-                _unitOfWork.GetRepository<Repository<TEntity>>().Add(entity);
-            }
-            else
-            {
-                entity = _mapper.Map<TEntity>(entry);
-                _unitOfWork.GetRepository<Repository<TEntity>>().Add(entity);
-            }
-
-            if (!shouldSave) return 0;
-            await CommitAsync();
-            return entity.Id;
+            entities = rootEntities.ToList();
+            UnitOfWork.GetRepository<IRepository<TEntity>>().AddRange(entities);
+        }
+        else
+        {
+            entities = Mapper.Map<List<TEntity>>(entries);
+            UnitOfWork.GetRepository<IRepository<TEntity>>().AddRange(entities);
         }
 
-        public virtual async Task<IEnumerable<long>> AddRangeAsync<TPost>(IEnumerable<TPost> entries,
-            bool shouldSave = false) where TPost : class
+        if (!shouldSave) return new List<long>();
+        await CommitAsync(userId);
+        return Result<IEnumerable<long>>.FromSuccess(entities.Select(e => e.Id).ToList());
+    }
+
+    public virtual Result BeginUpdate<TPatch>(TPatch entry, bool shouldSwapAttached = false) where TPatch : class
+    {
+        switch (entry)
         {
-            if (entries is null) throw new ArgumentNullException(nameof(entries));
-
-            IEnumerable<TEntity> entities;
-
-            if (entries is IEnumerable<TEntity> rootEntities)
-            {
-                entities = rootEntities;
-                _unitOfWork.GetRepository<Repository<TEntity>>().AddRange(entities);
-            }
-            else
-            {
-                entities = _mapper.Map<IEnumerable<TEntity>>(entries);
-                _unitOfWork.GetRepository<Repository<TEntity>>().AddRange(entities);
-            }
-
-            if (!shouldSave) return new List<long>();
-            await CommitAsync();
-            return entities.Select(e => e.Id).ToList();
+            case null:
+                throw new ArgumentNullException(nameof(entry));
+            case TEntity rootEntity:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().BeginUpdate(rootEntity, shouldSwapAttached);
+                break;
+            default:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().BeginUpdate(Mapper.Map<TEntity>(entry), shouldSwapAttached);
+                break;
         }
 
-        public virtual void BeginUpdate<TPatch>(TPatch entry) where TPatch : class
-        {
-            if (entry is null) throw new ArgumentNullException(nameof(entry));
+        return Result.FromSuccess();
+    }
 
-            if (entry is TEntity rootEntity)
-                _unitOfWork.GetRepository<Repository<TEntity>>().BeginUpdate(rootEntity);
-            else
-                _unitOfWork.GetRepository<Repository<TEntity>>().BeginUpdate(_mapper.Map<TEntity>(entry));
+    public virtual Result BeginUpdateRange<TPatch>(IEnumerable<TPatch> entries, bool shouldSwapAttached = false) where TPatch : class
+    {
+        switch (entries)
+        {
+            case null:
+                throw new ArgumentNullException(nameof(entries));
+            case IEnumerable<TEntity> rootEntities:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().BeginUpdateRange(rootEntities, shouldSwapAttached);
+                break;
+            default:
+                UnitOfWork.GetRepository<IRepository<TEntity>>()
+                    .BeginUpdateRange(Mapper.Map<IEnumerable<TEntity>>(entries), shouldSwapAttached);
+                break;
         }
 
-        public virtual void BeginUpdateRange<TPatch>(IEnumerable<TPatch> entries) where TPatch : class
-        {
-            if (entries is null) throw new ArgumentNullException(nameof(entries));
+        return Result.FromSuccess();
+    }
 
-            if (entries is IEnumerable<TEntity> rootEntities)
-                _unitOfWork.GetRepository<Repository<TEntity>>().BeginUpdateRange(rootEntities);
-            else
-                _unitOfWork.GetRepository<Repository<TEntity>>()
-                    .BeginUpdateRange(_mapper.Map<IEnumerable<TEntity>>(entries));
+    public virtual async Task<Result> DeleteAsync<TDelete>(TDelete entry, bool shouldSave = false, string? userId = null) where TDelete : class
+    {
+        switch (entry)
+        {
+            case null:
+                throw new ArgumentNullException(nameof(entry));
+            case TEntity rootEntity:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().Delete(rootEntity);
+                break;
+            default:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().Delete(Mapper.Map<TEntity>(entry));
+                break;
         }
 
-        public virtual async Task<long> AddOrUpdateAsync<TPut>(TPut entry, bool shouldSave = false) where TPut : class
+        if (!shouldSave) await CommitAsync(userId);
+
+        return Result.FromSuccess();
+    }
+
+    public virtual async Task<Result> DeleteAsync(long id, bool shouldSave = false, string? userId = null)
+    {
+        UnitOfWork.GetRepository<IRepository<TEntity>>().Delete(id);
+
+        if (!shouldSave) await CommitAsync(userId);
+
+        return Result.FromSuccess();
+    }
+
+    public virtual async Task<Result> DeleteRangeAsync(IEnumerable<long> ids, bool shouldSave = false, string? userId = null)
+    {
+        if (ids  is null) throw new ArgumentNullException(nameof(ids));
+
+        UnitOfWork.GetRepository<IRepository<TEntity>>().DeleteRange(ids);
+
+        if (!shouldSave) await CommitAsync(userId);
+
+        return Result.FromSuccess();
+    }
+
+    public virtual async Task<Result> DeleteRangeAsync<TDelete>(IEnumerable<TDelete> entries, bool shouldSave = false, string? userId = null)
+        where TDelete : class
+    {
+        switch (entries)
         {
-            if (entry is null) throw new ArgumentNullException(nameof(entry));
-
-            TEntity entity;
-
-            if (entry is TEntity rootEntity)
-            {
-                entity = rootEntity;
-                _unitOfWork.GetRepository<Repository<TEntity>>().AddOrUpdate(entity);
-            }
-            else
-            {
-                entity = _mapper.Map<TEntity>(entry);
-                _unitOfWork.GetRepository<Repository<TEntity>>().AddOrUpdate(entity);
-            }
-
-            if (!shouldSave) return 0;
-            await CommitAsync();
-            return entity.Id;
+            case null:
+                throw new ArgumentNullException(nameof(entries));
+            case IEnumerable<TEntity> rootEntities:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().DeleteRange(rootEntities);
+                break;
+            default:
+                UnitOfWork.GetRepository<IRepository<TEntity>>()
+                    .DeleteRange(Mapper.Map<IEnumerable<TEntity>>(entries));
+                break;
         }
 
-        public virtual async Task<List<long>> AddOrUpdateRangeAsync<TPut>(IEnumerable<TPut> entries,
-            bool shouldSave = false) where TPut : class
+        if (!shouldSave) await CommitAsync(userId);
+
+        return Result.FromSuccess();
+    }
+
+    public virtual async Task<Result> DisableAsync(long id, bool shouldSave = false, string? userId = null)
+    {
+        await UnitOfWork.GetRepository<IRepository<TEntity>>()
+            .DisableAsync(id);
+
+        if (!shouldSave) await CommitAsync(userId);
+
+        return Result.FromSuccess();
+    }
+
+    public virtual async Task<Result> DisableAsync<TDisable>(TDisable entry, bool shouldSave = false, string? userId = null) where TDisable : class
+    {
+        switch (entry)
         {
-            if (entries is null) throw new ArgumentNullException(nameof(entries));
-
-            IEnumerable<TEntity> entities;
-
-            if (entries is IEnumerable<TEntity> rootEntities)
-            {
-                entities = rootEntities;
-                _unitOfWork.GetRepository<Repository<TEntity>>().AddOrUpdateRange(entities);
-            }
-            else
-            {
-                entities = _mapper.Map<IEnumerable<TEntity>>(entries);
-                _unitOfWork.GetRepository<Repository<TEntity>>()
-                    .AddOrUpdateRange(_mapper.Map<IEnumerable<TEntity>>(entities));
-            }
-
-            if (!shouldSave) return new List<long>();
-            await CommitAsync();
-            return entities.Select(e => e.Id).ToList();
+            case null:
+                throw new ArgumentNullException(nameof(entry));
+            case TEntity rootEntity:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(rootEntity);
+                break;
+            default:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(Mapper.Map<TEntity>(entry));
+                break;
         }
 
-        public virtual async Task DeleteAsync<TDelete>(TDelete entry, bool shouldSave = false) where TDelete : class
+        if (!shouldSave) await CommitAsync(userId);
+
+        return Result.FromSuccess();
+    }
+
+    public virtual async Task<Result> DisableRangeAsync(IEnumerable<long> ids, bool shouldSave = false, string? userId = null)
+    {
+        if (ids  is null) throw new ArgumentNullException(nameof(ids));
+
+        await UnitOfWork.GetRepository<IRepository<TEntity>>()
+            .DisableRangeAsync(ids);
+
+        if (!shouldSave) await CommitAsync(userId);
+
+        return Result.FromSuccess();
+    }
+
+    public virtual async Task<Result> DisableRangeAsync<TDisable>(IEnumerable<TDisable> entries, bool shouldSave = false, string? userId = null)
+        where TDisable : class
+    {
+        switch (entries)
         {
-            if (entry is null) throw new ArgumentNullException(nameof(entry));
-
-            if (entry is TEntity rootEntity)
-                _unitOfWork.GetRepository<Repository<TEntity>>().Delete(rootEntity);
-            else
-                _unitOfWork.GetRepository<Repository<TEntity>>().Delete(_mapper.Map<TEntity>(entry));
-
-            if (shouldSave) await CommitAsync();
+            case null:
+                throw new ArgumentNullException(nameof(entries));
+            case IEnumerable<TEntity> rootEntities:
+                UnitOfWork.GetRepository<IRepository<TEntity>>().DisableRange(rootEntities);
+                break;
+            default:
+                UnitOfWork.GetRepository<IRepository<TEntity>>()
+                    .DeleteRange(Mapper.Map<IEnumerable<TEntity>>(entries));
+                break;
         }
 
-        public virtual async Task DeleteAsync(long id, bool shouldSave = false)
-        {
-            _unitOfWork.GetRepository<Repository<TEntity>>().Delete(id);
+        if (!shouldSave) await CommitAsync(userId);
 
-            if (shouldSave) await CommitAsync();
-        }
-
-        public virtual async Task DeleteRangeAsync(IEnumerable<long> ids, bool shouldSave = false)
-        {
-            if (ids is null) throw new ArgumentNullException(nameof(ids));
-
-            _unitOfWork.GetRepository<Repository<TEntity>>().DeleteRange(ids);
-
-            if (shouldSave) await CommitAsync();
-        }
-
-        public virtual async Task DeleteRangeAsync<TDelete>(IEnumerable<TDelete> entries, bool shouldSave = false)
-            where TDelete : class
-        {
-            if (entries is null) throw new ArgumentNullException(nameof(entries));
-
-            if (entries is IEnumerable<TEntity> rootEntities)
-                _unitOfWork.GetRepository<Repository<TEntity>>().DeleteRange(rootEntities);
-            else
-                _unitOfWork.GetRepository<Repository<TEntity>>()
-                    .DeleteRange(_mapper.Map<IEnumerable<TEntity>>(entries));
-
-            if (shouldSave) await CommitAsync();
-        }
-
-        public virtual async Task DisableAsync(long id, bool shouldSave = false)
-        {
-            await _unitOfWork.GetRepository<Repository<TEntity>>()
-                .DisableAsync(id);
-
-            if (shouldSave) await CommitAsync();
-        }
-
-        public virtual async Task DisableAsync<TDisable>(TDisable entry, bool shouldSave = false) where TDisable : class
-        {
-            if (entry is null) throw new ArgumentNullException(nameof(entry));
-
-            if (entry is TEntity rootEntity)
-                _unitOfWork.GetRepository<Repository<TEntity>>().Disable(rootEntity);
-            else
-                _unitOfWork.GetRepository<Repository<TEntity>>().Disable(_mapper.Map<TEntity>(entry));
-
-            if (shouldSave) await CommitAsync();
-        }
-
-        public virtual async Task DisableRangeAsync(IEnumerable<long> ids, bool shouldSave = false)
-        {
-            if (ids is null) throw new ArgumentNullException(nameof(ids));
-
-            await _unitOfWork.GetRepository<Repository<TEntity>>()
-                .DisableRangeAsync(ids);
-
-            if (shouldSave) await CommitAsync();
-        }
-
-        public virtual async Task DisableRangeAsync<TDisable>(IEnumerable<TDisable> entries, bool shouldSave = false)
-            where TDisable : class
-        {
-            if (entries is null) throw new ArgumentNullException(nameof(entries));
-
-            if (entries is IEnumerable<TEntity> rootEntities)
-                _unitOfWork.GetRepository<Repository<TEntity>>().DisableRange(rootEntities);
-            else
-                _unitOfWork.GetRepository<Repository<TEntity>>()
-                    .DeleteRange(_mapper.Map<IEnumerable<TEntity>>(entries));
-
-            if (shouldSave) await CommitAsync();
-        }
+        return Result.FromSuccess();
     }
 }

@@ -1,4 +1,4 @@
-﻿// This file is part of MikyM.Common.DDDArchitecture project
+﻿// This file is part of Lisbeth.Bot project
 //
 // Copyright (C) 2021 Krzysztof Kupisz - MikyM
 // 
@@ -15,26 +15,38 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MikyM.Common.DataAccessLayer.Filters;
+using MikyM.Common.Application.Results;
 using MikyM.Common.DataAccessLayer.Specifications;
-using MikyM.Common.Domain.Entities;
 
-namespace MikyM.Common.Application.Interfaces
+namespace MikyM.Common.Application.Interfaces;
+
+public interface IReadOnlyDataService<TEntity, TContext> : IDataServiceBase<TContext>
+    where TEntity : AggregateRootEntity where TContext : DbContext
 {
-    public interface IReadOnlyService<TEntity, TContext> : IServiceBase<TContext>
-        where TEntity : AggregateRootEntity where TContext : DbContext
-    {
-        Task<TGetResult> GetAsync<TGetResult>(long id) where TGetResult : class;
+    Task<Result<TEntity>> GetAsync(params object[] keyValues);
 
-        Task<IReadOnlyList<TGetResult>> GetBySpecificationsAsync<TGetResult>(
-            ISpecifications<TEntity> specifications = null) where TGetResult : class;
+    Task<Result<TGetResult>> GetAsync<TGetResult>(bool shouldProject = false, params object[] keyValues) where TGetResult : class;
 
-        Task<IReadOnlyList<TGetResult>> GetBySpecificationsAsync<TGetResult>(PaginationFilterDto filter,
-            ISpecifications<TEntity> specifications = null) where TGetResult : class;
+    Task<Result<TEntity>> GetSingleBySpecAsync(ISpecification<TEntity> specification);
 
-        Task<long> LongCountAsync(ISpecifications<TEntity> specifications = null);
-    }
+    Task<Result<TGetResult>> GetSingleBySpecAsync<TGetResult>(ISpecification<TEntity> specification)
+        where TGetResult : class;
+
+    Task<Result<TGetProjectedResult>> GetSingleBySpecAsync<TGetProjectedResult>(
+        ISpecification<TEntity, TGetProjectedResult> specification) where TGetProjectedResult : class;
+
+    Task<Result<IReadOnlyList<TEntity>>> GetBySpecAsync(ISpecification<TEntity> specification);
+
+    Task<Result<IReadOnlyList<TGetResult>>> GetBySpecAsync<TGetResult>(ISpecification<TEntity> specification)
+        where TGetResult : class;
+
+    Task<Result<IReadOnlyList<TGetProjectedResult>>> GetBySpecAsync<TGetProjectedResult>(
+        ISpecification<TEntity, TGetProjectedResult> specification) where TGetProjectedResult : class;
+
+    Task<Result<IReadOnlyList<TGetResult>>> GetAllAsync<TGetResult>(bool shouldProject = false)
+        where TGetResult : class;
+
+    Task<Result<IReadOnlyList<TEntity>>> GetAllAsync();
+
+    Task<Result<long>> LongCountAsync(ISpecification<TEntity>? specification = null);
 }
