@@ -16,9 +16,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using AutoMapper;
-using MikyM.Common.Application.Results;
-using MikyM.Common.Application.Results.Errors;
 using MikyM.Common.DataAccessLayer.Specifications;
+using MikyM.Common.Utilities.Results;
+using MikyM.Common.Utilities.Results.Errors;
 
 namespace MikyM.Common.Application.Services;
 

@@ -16,7 +16,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using AutoMapper;
-using MikyM.Common.Application.Results;
+using MikyM.Common.Utilities.Results;
 
 namespace MikyM.Common.Application.Services;
 

@@ -169,7 +169,7 @@ public static class DependancyInjectionExtensions
 
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(dataConfig));
             }
         }
 
@@ -247,7 +247,7 @@ public static class DependancyInjectionExtensions
                             Intercept.Class => shouldAsInterfaces
                                 ? builder.RegisterType(dataType).AsImplementedInterfaces().EnableClassInterceptors()
                                 : builder.RegisterType(dataType).EnableClassInterceptors(),
-                            _ => throw new ArgumentOutOfRangeException()
+                            _ => throw new ArgumentOutOfRangeException(nameof(intrEnableAttr.Intercept))
                         };
                     }
                     else
@@ -307,7 +307,7 @@ public static class DependancyInjectionExtensions
                             registrationGenericBuilder?.InstancePerOwned(scopeOverrideAttr.Owned);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(nameof(scope));
                 }
 
                 foreach (var attr in intrAttrs)

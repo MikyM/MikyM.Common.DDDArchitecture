@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using MikyM.Common.Application.Results;
 using MikyM.Common.DataAccessLayer.Specifications;
+using MikyM.Common.Utilities.Results;
 
 namespace MikyM.Common.Application.Interfaces;
 
