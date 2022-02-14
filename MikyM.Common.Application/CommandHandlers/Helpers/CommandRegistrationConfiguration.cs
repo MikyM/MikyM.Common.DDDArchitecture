@@ -1,35 +1,17 @@
-﻿// This file is part of Lisbeth.Bot project
-//
-// Copyright (C) 2021 Krzysztof Kupisz - MikyM
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-// 
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-
-namespace MikyM.Common.Application.CommandHandlers.Helpers;
+﻿namespace MikyM.Common.Application.CommandHandlers.Helpers;
 
 /// <summary>
-/// Registration extension configuration
+/// Command handler options
 /// </summary>
-public sealed class CommandRegistrationConfiguration
+public sealed class CommandHandlerOptions
 {
 
-    internal CommandRegistrationConfiguration(RegistrationConfiguration config)
+    internal CommandHandlerOptions(ApplicationOptions config)
     {
         Config = config;
     }
 
-    internal RegistrationConfiguration Config { get; set; }
+    internal ApplicationOptions Config { get; set; }
 
     /// <summary>
     /// Gets or sets the default lifetime for base generic data services
