@@ -4,11 +4,12 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 	  <PackageId>MikyM.Common.DDDArchitecture</PackageId>
-	  <Version>1.0.2</Version>
+	  <Version>1.0.3</Version>
 	  <Authors>Krzysztof Kupisz</Authors>
 	  <PackageDescription>Base Domain Driven Design architecture.</PackageDescription>
 	  <RepositoryUrl>https://github.com/MikyM/MikyM.Common.DDDArchitecture</RepositoryUrl>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +17,7 @@
     <PackageReference Include="AutoMapper.Contrib.Autofac.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="5.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="MikyM.Common.DataAccessLayer" Version="1.0.5" />
+    <PackageReference Include="MikyM.Common.DataAccessLayer" Version="1.0.6" />
   </ItemGroup>
 
 </Project>
