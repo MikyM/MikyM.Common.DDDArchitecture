@@ -3,14 +3,18 @@ using MikyM.Common.Utilities.Results;
 
 namespace MikyM.Common.Application.Services;
 
-/// <inheritdoc cref="ICrudService{TEntity,TContext}"/>
-public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TContext>, ICrudService<TEntity, TContext>
+/// <summary>
+/// CRUD data service
+/// </summary>
+/// <inheritdoc cref="ICrudDataService{TEntity,TContext}"/>
+public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, TContext>, ICrudDataService<TEntity, TContext>
     where TEntity : AggregateRootEntity where TContext : DbContext
 {
-    public CrudService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
+    public CrudDataService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
     {
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result<long>> AddAsync<TPost>(TPost entry, bool shouldSave = false, string? userId = null) where TPost : class
     {
         if (entry  is null) throw new ArgumentNullException(nameof(entry));
@@ -32,6 +36,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result<long>.FromSuccess(entity.Id);
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result<IEnumerable<long>>> AddRangeAsync<TPost>(IEnumerable<TPost> entries,
         bool shouldSave = false, string? userId = null) where TPost : class
     {
@@ -55,6 +60,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result<IEnumerable<long>>.FromSuccess(entities.Select(e => e.Id).ToList());
     }
 
+    /// <inheritdoc />
     public virtual Result BeginUpdate<TPatch>(TPatch entry, bool shouldSwapAttached = false) where TPatch : class
     {
         switch (entry)
@@ -72,6 +78,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual Result BeginUpdateRange<TPatch>(IEnumerable<TPatch> entries, bool shouldSwapAttached = false) where TPatch : class
     {
         switch (entries)
@@ -90,6 +97,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result> DeleteAsync<TDelete>(TDelete entry, bool shouldSave = false, string? userId = null) where TDelete : class
     {
         switch (entry)
@@ -109,6 +117,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result> DeleteAsync(long id, bool shouldSave = false, string? userId = null)
     {
         UnitOfWork.GetRepository<IRepository<TEntity>>().Delete(id);
@@ -118,6 +127,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result> DeleteRangeAsync(IEnumerable<long> ids, bool shouldSave = false, string? userId = null)
     {
         if (ids  is null) throw new ArgumentNullException(nameof(ids));
@@ -129,6 +139,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result> DeleteRangeAsync<TDelete>(IEnumerable<TDelete> entries, bool shouldSave = false, string? userId = null)
         where TDelete : class
     {
@@ -150,6 +161,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result> DisableAsync(long id, bool shouldSave = false, string? userId = null)
     {
         await UnitOfWork.GetRepository<IRepository<TEntity>>()
@@ -160,6 +172,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result> DisableAsync<TDisable>(TDisable entry, bool shouldSave = false, string? userId = null) where TDisable : class
     {
         switch (entry)
@@ -179,6 +192,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result> DisableRangeAsync(IEnumerable<long> ids, bool shouldSave = false, string? userId = null)
     {
         if (ids  is null) throw new ArgumentNullException(nameof(ids));
@@ -191,6 +205,7 @@ public class CrudService<TEntity, TContext> : ReadOnlyDataService<TEntity, TCont
         return Result.FromSuccess();
     }
 
+    /// <inheritdoc />
     public virtual async Task<Result> DisableRangeAsync<TDisable>(IEnumerable<TDisable> entries, bool shouldSave = false, string? userId = null)
         where TDisable : class
     {

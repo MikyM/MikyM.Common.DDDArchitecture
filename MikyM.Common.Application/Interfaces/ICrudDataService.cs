@@ -5,7 +5,7 @@ namespace MikyM.Common.Application.Interfaces;
 /// <summary>
 /// CRUD data service
 /// </summary>
-public interface ICrudService<TEntity, TContext> : IReadOnlyDataService<TEntity, TContext>
+public interface ICrudDataService<TEntity, TContext> : IReadOnlyDataService<TEntity, TContext>
     where TEntity : AggregateRootEntity where TContext : DbContext
 {
     /// <summary>

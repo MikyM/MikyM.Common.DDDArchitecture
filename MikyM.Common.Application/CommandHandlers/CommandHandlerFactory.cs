@@ -42,6 +42,7 @@ public class CommandHandlerFactory : ICommandHandlerFactory
         _lifetimeScope = lifetimeScope;
     }
 
+    /// <inheritdoc />
     public TCommandHandler GetHandler<TCommandHandler>() where TCommandHandler : class, ICommandHandler
     {
         if (!typeof(TCommandHandler).IsInterface)
@@ -68,6 +69,7 @@ public class CommandHandlerFactory : ICommandHandlerFactory
         throw new InvalidOperationException($"Couldn't add nor retrieve handler of type {name}");
     }
 
+    /// <inheritdoc />
     public ICommandHandler<TCommand> GetHandlerFor<TCommand>() where TCommand : class, ICommand
     {
         _commandHandlers ??= new ConcurrentDictionary<string, ICommandHandler>();
@@ -90,6 +92,7 @@ public class CommandHandlerFactory : ICommandHandlerFactory
         throw new InvalidOperationException($"Couldn't add nor retrieve handler for type {name}");
     }
 
+    /// <inheritdoc />
     public ICommandHandler<TCommand ,TResult> GetHandlerFor<TCommand, TResult>() where TCommand : class, ICommand<TResult>
     {
         _commandHandlers ??= new ConcurrentDictionary<string, ICommandHandler>();

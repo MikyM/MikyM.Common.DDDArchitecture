@@ -7,6 +7,9 @@ namespace MikyM.Common.Application.CommandHandlers.Commands;
 /// </summary>
 public abstract class CommandBase : ICommand
 {
+    /// <summary>
+    /// Serializes this to json using <see cref="JsonSerializer"/>
+    /// </summary>
     public override string ToString()
         => JsonSerializer.Serialize(this);
 }
@@ -17,6 +20,9 @@ public abstract class CommandBase : ICommand
 /// <typeparam name="TResult">The type of the result of this command</typeparam>
 public abstract class CommandBase<TResult> : ICommand<TResult>
 {
+    /// <summary>
+    /// Serializes this to json using <see cref="JsonSerializer"/>
+    /// </summary>
     public override string ToString()
         => JsonSerializer.Serialize(this);
 }
