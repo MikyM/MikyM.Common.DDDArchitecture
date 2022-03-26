@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MikyM.Common.Utilities.Results;
+// ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
 namespace MikyM.Common.Application.Services;
 
@@ -10,6 +11,11 @@ namespace MikyM.Common.Application.Services;
 public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, TContext>, ICrudDataService<TEntity, TContext>
     where TEntity : AggregateRootEntity where TContext : DbContext
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="CrudDataService{TEntity,TContext}"/>
+    /// </summary>
+    /// <param name="mapper">Mapper instance</param>
+    /// <param name="uof">Unit of work instance</param>
     public CrudDataService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
     {
     }
@@ -32,6 +38,7 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
         }
 
         if (!shouldSave) return 0;
+
         await CommitAsync(userId);
         return Result<long>.FromSuccess(entity.Id);
     }
@@ -56,6 +63,7 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
         }
 
         if (!shouldSave) return new List<long>();
+
         await CommitAsync(userId);
         return Result<IEnumerable<long>>.FromSuccess(entities.Select(e => e.Id).ToList());
     }
@@ -112,7 +120,8 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
                 break;
         }
 
-        if (!shouldSave) await CommitAsync(userId);
+        if (shouldSave) 
+            await CommitAsync(userId);
 
         return Result.FromSuccess();
     }
@@ -122,7 +131,8 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
     {
         UnitOfWork.GetRepository<IRepository<TEntity>>().Delete(id);
 
-        if (!shouldSave) await CommitAsync(userId);
+        if (shouldSave) 
+            await CommitAsync(userId);
 
         return Result.FromSuccess();
     }
@@ -134,7 +144,8 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
 
         UnitOfWork.GetRepository<IRepository<TEntity>>().DeleteRange(ids);
 
-        if (!shouldSave) await CommitAsync(userId);
+        if (shouldSave) 
+            await CommitAsync(userId);
 
         return Result.FromSuccess();
     }
@@ -156,7 +167,8 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
                 break;
         }
 
-        if (!shouldSave) await CommitAsync(userId);
+        if (shouldSave) 
+            await CommitAsync(userId);
 
         return Result.FromSuccess();
     }
@@ -167,7 +179,8 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
         await UnitOfWork.GetRepository<IRepository<TEntity>>()
             .DisableAsync(id);
 
-        if (!shouldSave) await CommitAsync(userId);
+        if (shouldSave) 
+            await CommitAsync(userId);
 
         return Result.FromSuccess();
     }
@@ -180,17 +193,15 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entry));
             case TEntity rootEntity:
-                BeginUpdate(rootEntity);
                 UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(rootEntity);
                 break;
             default:
-                var map = Mapper.Map<TEntity>(entry);
-                BeginUpdate(map);
-                UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(map);
+                UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(Mapper.Map<TEntity>(entry));
                 break;
         }
 
-        if (!shouldSave) await CommitAsync(userId);
+        if (shouldSave) 
+            await CommitAsync(userId);
 
         return Result.FromSuccess();
     }
@@ -203,7 +214,8 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
         await UnitOfWork.GetRepository<IRepository<TEntity>>()
             .DisableRangeAsync(ids);
 
-        if (!shouldSave) await CommitAsync(userId);
+        if (shouldSave) 
+            await CommitAsync(userId);
 
         return Result.FromSuccess();
     }
@@ -217,19 +229,16 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entries));
             case IEnumerable<TEntity> rootEntities:
-                var list = rootEntities.ToList();
-                BeginUpdateRange(list);
-                UnitOfWork.GetRepository<IRepository<TEntity>>().DisableRange(list);
+                UnitOfWork.GetRepository<IRepository<TEntity>>().DisableRange(rootEntities);
                 break;
             default:
-                var map = Mapper.Map<IEnumerable<TEntity>>(entries).ToList();
-                BeginUpdateRange(map);
                 UnitOfWork.GetRepository<IRepository<TEntity>>()
-                    .DisableRange(map);
+                    .DisableRange(Mapper.Map<IEnumerable<TEntity>>(entries));
                 break;
         }
 
-        if (!shouldSave) await CommitAsync(userId);
+        if (shouldSave) 
+            await CommitAsync(userId);
 
         return Result.FromSuccess();
     }
