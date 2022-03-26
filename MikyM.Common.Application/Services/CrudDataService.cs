@@ -180,10 +180,13 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entry));
             case TEntity rootEntity:
+                BeginUpdate(rootEntity);
                 UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(rootEntity);
                 break;
             default:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(Mapper.Map<TEntity>(entry));
+                var map = Mapper.Map<TEntity>(entry);
+                BeginUpdate(map);
+                UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(map);
                 break;
         }
 
@@ -214,11 +217,15 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entries));
             case IEnumerable<TEntity> rootEntities:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().DisableRange(rootEntities);
+                var list = rootEntities.ToList();
+                BeginUpdateRange(list);
+                UnitOfWork.GetRepository<IRepository<TEntity>>().DisableRange(list);
                 break;
             default:
+                var map = Mapper.Map<IEnumerable<TEntity>>(entries).ToList();
+                BeginUpdateRange(map);
                 UnitOfWork.GetRepository<IRepository<TEntity>>()
-                    .DeleteRange(Mapper.Map<IEnumerable<TEntity>>(entries));
+                    .DisableRange(map);
                 break;
         }
 
