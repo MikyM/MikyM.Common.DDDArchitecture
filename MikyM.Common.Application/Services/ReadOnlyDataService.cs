@@ -66,9 +66,7 @@ public class ReadOnlyDataService<TEntity, TContext> : DataServiceBase<TContext>,
         ISpecification<TEntity> specification) where TGetResult : class
     {
         var res = await this.GetBySpecAsync(specification);
-        return res.IsDefined()
-            ? Result<IReadOnlyList<TGetResult>>.FromError(new NotFoundError())
-            : Result<IReadOnlyList<TGetResult>>.FromSuccess(this.Mapper.Map<IReadOnlyList<TGetResult>>(res.Entity));
+        return Result<IReadOnlyList<TGetResult>>.FromSuccess(this.Mapper.Map<IReadOnlyList<TGetResult>>(res.Entity));
     }
 
     /// <inheritdoc />
