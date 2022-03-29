@@ -30,6 +30,7 @@ public sealed class ApplicationOptions
 
     /// <summary>
     /// Registers an async executor with the container
+    /// </summary>
     /// <returns>Current instance of the <see cref="ApplicationOptions"/></returns>
     public ApplicationOptions AddAsyncExecutor()
     {

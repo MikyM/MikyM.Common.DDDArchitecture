@@ -1,24 +1,22 @@
 ﻿namespace MikyM.Common.Application.CommandHandlers.Commands;
 
 /// <summary>
-/// Base command marker interface
+/// Base command marker interface, used only internally
 /// </summary>
-public interface ICommand
+public interface IBaseCommand
 {
-    
 }
 
 /// <summary>
-/// Marker interface, used only internally
+/// Represents a base command
 /// </summary>
-public interface IResultCommand : ICommand
+public interface ICommand : IBaseCommand
 {
-
 }
 
 /// <summary>
-/// Base command with a result marker interface
+/// Represents a base command with a result
 /// </summary>
-public interface ICommand<TResult> : IResultCommand
+public interface ICommand<TResult> : IBaseCommand
 {
 }

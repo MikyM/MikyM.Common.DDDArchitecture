@@ -37,6 +37,10 @@ public class CommandHandlerFactory : ICommandHandlerFactory
     private ConcurrentDictionary<string, ICommandHandler>? _commandHandlers;
     private readonly ILifetimeScope _lifetimeScope;
 
+    /// <summary>
+    /// Creates a new instance of <see cref="CommandHandlerFactory"/>
+    /// </summary>
+    /// <param name="lifetimeScope">Autofac's <see cref="ILifetimeScope"/></param>
     public CommandHandlerFactory(ILifetimeScope lifetimeScope)
     {
         _lifetimeScope = lifetimeScope;

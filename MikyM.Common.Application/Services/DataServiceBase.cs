@@ -20,6 +20,11 @@ public abstract class DataServiceBase<TContext> : IDataServiceBase<TContext> whe
     protected readonly IUnitOfWork<TContext> UnitOfWork;
     private bool _disposed;
 
+    /// <summary>
+    /// Creates a new instance of <see cref="DataServiceBase{TContext}"/>
+    /// </summary>
+    /// <param name="mapper">Instance of <see cref="IMapper"/></param>
+    /// <param name="uof">Instance of <see cref="IUnitOfWork{TContext}"/></param>
     protected DataServiceBase(IMapper mapper, IUnitOfWork<TContext> uof)
     {
         Mapper = mapper;

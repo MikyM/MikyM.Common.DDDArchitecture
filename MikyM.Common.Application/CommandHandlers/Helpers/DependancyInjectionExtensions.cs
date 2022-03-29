@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace MikyM.Common.Application.CommandHandlers.Helpers;
 
+/// <summary>
+/// DI extensions for <see cref="ContainerBuilder"/>
+/// </summary>
 public static class DependancyInjectionExtensions
 {
     /// <summary>

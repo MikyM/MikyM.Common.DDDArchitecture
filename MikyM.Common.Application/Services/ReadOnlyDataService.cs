@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MikyM.Common.Application.Interfaces;
 using MikyM.Common.DataAccessLayer.Specifications;
 using MikyM.Common.Utilities.Results;
 using MikyM.Common.Utilities.Results.Errors;
@@ -12,6 +13,11 @@ namespace MikyM.Common.Application.Services;
 public class ReadOnlyDataService<TEntity, TContext> : DataServiceBase<TContext>, IReadOnlyDataService<TEntity, TContext>
     where TEntity : AggregateRootEntity where TContext : DbContext
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="IReadOnlyDataService{TEntity,TContext}"/>
+    /// </summary>
+    /// <param name="mapper">Instance of <see cref="IMapper"/></param>
+    /// <param name="uof">Instance of <see cref="IUnitOfWork{TContext}"/></param>
     public ReadOnlyDataService(IMapper mapper, IUnitOfWork<TContext> uof) : base(mapper, uof)
     {
     }

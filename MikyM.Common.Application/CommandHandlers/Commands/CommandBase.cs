@@ -15,7 +15,7 @@ public abstract class CommandBase : ICommand
 }
 
 /// <summary>
-/// Base command implementation
+/// Base command with a result implementation
 /// </summary>
 /// <typeparam name="TResult">The type of the result of this command</typeparam>
 public abstract class CommandBase<TResult> : ICommand<TResult>

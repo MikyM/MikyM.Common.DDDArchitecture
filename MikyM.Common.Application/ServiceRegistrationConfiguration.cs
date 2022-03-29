@@ -67,7 +67,16 @@ public sealed class ServiceApplicationOptions
 /// </summary>
 public enum DataInterceptorConfiguration
 {
+    /// <summary>
+    /// Crud and read-only
+    /// </summary>
     CrudAndReadOnly,
+    /// <summary>
+    /// Crud
+    /// </summary>
     Crud,
+    /// <summary>
+    /// Read-only
+    /// </summary>
     ReadOnly
 }

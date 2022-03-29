@@ -1,5 +1,8 @@
 ﻿namespace MikyM.Common.Application.Extensions;
 
+/// <summary>
+/// String extensions
+/// </summary>
 public static class StringExtensions
 {
     /// <summary>

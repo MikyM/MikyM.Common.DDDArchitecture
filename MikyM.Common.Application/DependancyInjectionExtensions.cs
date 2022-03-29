@@ -10,6 +10,9 @@ using System.Reflection;
 
 namespace MikyM.Common.Application;
 
+/// <summary>
+/// DI extensions for <see cref="ContainerBuilder"/>
+/// </summary>
 public static class DependancyInjectionExtensions
 {
     /// <summary>

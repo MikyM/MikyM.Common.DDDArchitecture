@@ -25,7 +25,7 @@ public interface ICommandHandler<in TCommand> : ICommandHandler where TCommand :
 }
 
 /// <summary>
-/// Command handler
+/// Command handler that returns a specific result
 /// </summary>
 /// <typeparam name="TCommand">Command type implementing <see cref="ICommand{TResult}"/></typeparam>
 /// <typeparam name="TResult">Result of the <see cref="ICommand{TResult}"/></typeparam>
@@ -35,6 +35,6 @@ public interface ICommandHandler<in TCommand, TResult> : ICommandHandler where T
     /// Handles the given command
     /// </summary>
     /// <param name="command">Command to handle</param>
-    /// <returns>The <see cref="Result"/> of the operation containing a <see cref="TResult"/> if any</returns>
+    /// <returns>The <see cref="Result"/> of the operation containing a <typeparamref name="TResult"/> if any</returns>
     Task<Result<TResult>> HandleAsync(TCommand command);
 }
