@@ -29,12 +29,12 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
         if (entry is TEntity rootEntity)
         {
             entity = rootEntity;
-            UnitOfWork.GetRepository<IRepository<TEntity>>().Add(entity);
+            UnitOfWork.GetRepository<Repository<TEntity>>().Add(entity);
         }
         else
         {
             entity = Mapper.Map<TEntity>(entry);
-            UnitOfWork.GetRepository<IRepository<TEntity>>().Add(entity);
+            UnitOfWork.GetRepository<Repository<TEntity>>().Add(entity);
         }
 
         if (!shouldSave) return 0;
@@ -54,12 +54,12 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
         if (entries is IEnumerable<TEntity> rootEntities)
         {
             entities = rootEntities.ToList();
-            UnitOfWork.GetRepository<IRepository<TEntity>>().AddRange(entities);
+            UnitOfWork.GetRepository<Repository<TEntity>>().AddRange(entities);
         }
         else
         {
             entities = Mapper.Map<List<TEntity>>(entries);
-            UnitOfWork.GetRepository<IRepository<TEntity>>().AddRange(entities);
+            UnitOfWork.GetRepository<Repository<TEntity>>().AddRange(entities);
         }
 
         if (!shouldSave) return new List<long>();
@@ -76,10 +76,10 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entry));
             case TEntity rootEntity:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().BeginUpdate(rootEntity, shouldSwapAttached);
+                UnitOfWork.GetRepository<Repository<TEntity>>().BeginUpdate(rootEntity, shouldSwapAttached);
                 break;
             default:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().BeginUpdate(Mapper.Map<TEntity>(entry), shouldSwapAttached);
+                UnitOfWork.GetRepository<Repository<TEntity>>().BeginUpdate(Mapper.Map<TEntity>(entry), shouldSwapAttached);
                 break;
         }
 
@@ -94,10 +94,10 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entries));
             case IEnumerable<TEntity> rootEntities:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().BeginUpdateRange(rootEntities, shouldSwapAttached);
+                UnitOfWork.GetRepository<Repository<TEntity>>().BeginUpdateRange(rootEntities, shouldSwapAttached);
                 break;
             default:
-                UnitOfWork.GetRepository<IRepository<TEntity>>()
+                UnitOfWork.GetRepository<Repository<TEntity>>()
                     .BeginUpdateRange(Mapper.Map<IEnumerable<TEntity>>(entries), shouldSwapAttached);
                 break;
         }
@@ -113,10 +113,10 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entry));
             case TEntity rootEntity:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().Delete(rootEntity);
+                UnitOfWork.GetRepository<Repository<TEntity>>().Delete(rootEntity);
                 break;
             default:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().Delete(Mapper.Map<TEntity>(entry));
+                UnitOfWork.GetRepository<Repository<TEntity>>().Delete(Mapper.Map<TEntity>(entry));
                 break;
         }
 
@@ -129,7 +129,7 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
     /// <inheritdoc />
     public virtual async Task<Result> DeleteAsync(long id, bool shouldSave = false, string? userId = null)
     {
-        UnitOfWork.GetRepository<IRepository<TEntity>>().Delete(id);
+        UnitOfWork.GetRepository<Repository<TEntity>>().Delete(id);
 
         if (shouldSave) 
             await CommitAsync(userId);
@@ -142,7 +142,7 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
     {
         if (ids  is null) throw new ArgumentNullException(nameof(ids));
 
-        UnitOfWork.GetRepository<IRepository<TEntity>>().DeleteRange(ids);
+        UnitOfWork.GetRepository<Repository<TEntity>>().DeleteRange(ids);
 
         if (shouldSave) 
             await CommitAsync(userId);
@@ -159,10 +159,10 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entries));
             case IEnumerable<TEntity> rootEntities:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().DeleteRange(rootEntities);
+                UnitOfWork.GetRepository<Repository<TEntity>>().DeleteRange(rootEntities);
                 break;
             default:
-                UnitOfWork.GetRepository<IRepository<TEntity>>()
+                UnitOfWork.GetRepository<Repository<TEntity>>()
                     .DeleteRange(Mapper.Map<IEnumerable<TEntity>>(entries));
                 break;
         }
@@ -176,7 +176,7 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
     /// <inheritdoc />
     public virtual async Task<Result> DisableAsync(long id, bool shouldSave = false, string? userId = null)
     {
-        await UnitOfWork.GetRepository<IRepository<TEntity>>()
+        await UnitOfWork.GetRepository<Repository<TEntity>>()
             .DisableAsync(id);
 
         if (shouldSave) 
@@ -193,10 +193,10 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entry));
             case TEntity rootEntity:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(rootEntity);
+                UnitOfWork.GetRepository<Repository<TEntity>>().Disable(rootEntity);
                 break;
             default:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().Disable(Mapper.Map<TEntity>(entry));
+                UnitOfWork.GetRepository<Repository<TEntity>>().Disable(Mapper.Map<TEntity>(entry));
                 break;
         }
 
@@ -211,7 +211,7 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
     {
         if (ids  is null) throw new ArgumentNullException(nameof(ids));
 
-        await UnitOfWork.GetRepository<IRepository<TEntity>>()
+        await UnitOfWork.GetRepository<Repository<TEntity>>()
             .DisableRangeAsync(ids);
 
         if (shouldSave) 
@@ -229,10 +229,10 @@ public class CrudDataService<TEntity, TContext> : ReadOnlyDataService<TEntity, T
             case null:
                 throw new ArgumentNullException(nameof(entries));
             case IEnumerable<TEntity> rootEntities:
-                UnitOfWork.GetRepository<IRepository<TEntity>>().DisableRange(rootEntities);
+                UnitOfWork.GetRepository<Repository<TEntity>>().DisableRange(rootEntities);
                 break;
             default:
-                UnitOfWork.GetRepository<IRepository<TEntity>>()
+                UnitOfWork.GetRepository<Repository<TEntity>>()
                     .DisableRange(Mapper.Map<IEnumerable<TEntity>>(entries));
                 break;
         }
