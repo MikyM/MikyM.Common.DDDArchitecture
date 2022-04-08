@@ -34,7 +34,6 @@ public interface ICommandHandlerFactory
 /// <inheritdoc cref="ICommandHandlerFactory"/>
 public class CommandHandlerFactory : ICommandHandlerFactory
 {
-    private ConcurrentDictionary<string, ICommandHandler>? _commandHandlers;
     private readonly ILifetimeScope _lifetimeScope;
 
     /// <summary>
@@ -52,71 +51,14 @@ public class CommandHandlerFactory : ICommandHandlerFactory
         if (!typeof(TCommandHandler).IsInterface)
             throw new ArgumentException("Due to Autofac limitations you must use interfaces");
 
-        _commandHandlers ??= new ConcurrentDictionary<string, ICommandHandler>();
-
-        var type = typeof(TCommandHandler);
-        string name = type.FullName ?? throw new InvalidOperationException();
-
-        if (_commandHandlers.TryGetValue(name, out var handler)) 
-            return (TCommandHandler) handler;
-
-        var other = _commandHandlers.Values.FirstOrDefault(x => x.GetType().IsAssignableTo(type));
-        if (other is not null)
-            return (TCommandHandler) other;
-
-        if (_commandHandlers.TryAdd(name, _lifetimeScope.Resolve<TCommandHandler>()))
-            return (TCommandHandler)_commandHandlers[name];
-
-        if (_commandHandlers.TryGetValue(name, out handler))
-            return (TCommandHandler)handler;
-
-        throw new InvalidOperationException($"Couldn't add nor retrieve handler of type {name}");
+        return _lifetimeScope.Resolve<TCommandHandler>();
     }
 
     /// <inheritdoc />
     public ICommandHandler<TCommand> GetHandlerFor<TCommand>() where TCommand : class, ICommand
-    {
-        _commandHandlers ??= new ConcurrentDictionary<string, ICommandHandler>();
-
-        var commandType = typeof(TCommand);
-        string name = commandType.FullName ?? throw new InvalidOperationException();
-
-        var generic = typeof(ICommandHandler<,>).MakeGenericType(commandType);
-        string genericName = generic.FullName ?? throw new InvalidOperationException();
-
-        if (_commandHandlers.TryGetValue(genericName, out var handler)) 
-            return (ICommandHandler<TCommand>) handler;
-
-        if (_commandHandlers.TryAdd(genericName, _lifetimeScope.Resolve<ICommandHandler<TCommand>>()))
-            return (ICommandHandler<TCommand>)_commandHandlers[genericName];
-
-        if (_commandHandlers.TryGetValue(name, out handler))
-            return (ICommandHandler<TCommand>)handler;
-
-        throw new InvalidOperationException($"Couldn't add nor retrieve handler for type {name}");
-    }
+        => _lifetimeScope.Resolve<ICommandHandler<TCommand>>();
 
     /// <inheritdoc />
     public ICommandHandler<TCommand ,TResult> GetHandlerFor<TCommand, TResult>() where TCommand : class, ICommand<TResult>
-    {
-        _commandHandlers ??= new ConcurrentDictionary<string, ICommandHandler>();
-
-        var commandType = typeof(TCommand);
-        var resultType = typeof(TResult);
-        string name = commandType.FullName ?? throw new InvalidOperationException();
-
-        var generic = typeof(ICommandHandler<,>).MakeGenericType(commandType, resultType);
-        string genericName = generic.FullName ?? throw new InvalidOperationException();
-
-        if (_commandHandlers.TryGetValue(genericName, out var handler)) 
-            return (ICommandHandler<TCommand, TResult>) handler;
-
-        if (_commandHandlers.TryAdd(genericName, _lifetimeScope.Resolve<ICommandHandler<TCommand, TResult>>()))
-            return (ICommandHandler<TCommand, TResult>) _commandHandlers[genericName];
-
-        if (_commandHandlers.TryGetValue(name, out handler))
-            return (ICommandHandler<TCommand, TResult>)handler;
-
-        throw new InvalidOperationException($"Couldn't add nor retrieve handler for type {name}");
-    }
+        => _lifetimeScope.Resolve<ICommandHandler<TCommand, TResult>>();
 }
