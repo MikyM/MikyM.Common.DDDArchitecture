@@ -7,6 +7,7 @@ using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using MikyM.Common.Application.Services;
 using System.Reflection;
+using Microsoft.Extensions.Options;
 
 namespace MikyM.Common.Application;
 
@@ -32,8 +33,9 @@ public static class DependancyInjectionExtensions
         var config = new ApplicationConfiguration(builder);
         config.AddInterceptor(x =>
             new LoggingInterceptor(x.Resolve<ILoggerFactory>().CreateLogger(nameof(LoggingInterceptor))));
-
         options(config);
+        
+        builder.Register(x => config).As<IOptions<ApplicationConfiguration>>().SingleInstance();
 
         return builder;
     }
@@ -50,6 +52,8 @@ public static class DependancyInjectionExtensions
 
         var config = new ServiceApplicationConfiguration(applicationConfiguration);
         options?.Invoke(config);
+        
+        builder.Register(x => config).As<IOptions<ServiceApplicationConfiguration>>().SingleInstance();
 
         builder.AddAttributeDefinedServices(config.AttributeOptions);
 

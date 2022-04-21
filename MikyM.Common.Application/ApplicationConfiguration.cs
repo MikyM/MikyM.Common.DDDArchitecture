@@ -1,5 +1,6 @@
 ﻿
 using Autofac;
+using Microsoft.Extensions.Options;
 using MikyM.Common.Utilities;
 
 namespace MikyM.Common.Application;
@@ -7,7 +8,7 @@ namespace MikyM.Common.Application;
 /// <summary>
 /// Registration extension configuration
 /// </summary>
-public sealed class ApplicationConfiguration
+public sealed class ApplicationConfiguration : IOptions<ApplicationConfiguration>
 {
     internal ContainerBuilder Builder { get; set; }
 
@@ -37,4 +38,7 @@ public sealed class ApplicationConfiguration
         Builder.AddAsyncExecutor();
         return this;
     }
+
+    /// <inheritdoc />
+    public ApplicationConfiguration Value => this;
 }

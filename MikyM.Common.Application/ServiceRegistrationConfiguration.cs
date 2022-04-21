@@ -1,9 +1,11 @@
-﻿namespace MikyM.Common.Application;
+﻿using Microsoft.Extensions.Options;
+
+namespace MikyM.Common.Application;
 
 /// <summary>
 /// Registration extension configuration
 /// </summary>
-public sealed class ServiceApplicationConfiguration
+public sealed class ServiceApplicationConfiguration : IOptions<ServiceApplicationConfiguration>
 {
     internal ServiceApplicationConfiguration(ApplicationConfiguration config)
     {
@@ -60,6 +62,9 @@ public sealed class ServiceApplicationConfiguration
         AttributeOptions = action;
         return this;
     }
+
+    /// <inheritdoc />
+    public ServiceApplicationConfiguration Value => this;
 }
 
 /// <summary>

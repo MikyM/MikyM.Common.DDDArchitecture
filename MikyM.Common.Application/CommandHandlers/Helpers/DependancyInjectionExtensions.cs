@@ -2,6 +2,7 @@
 using Autofac.Extras.DynamicProxy;
 using MikyM.Autofac.Extensions.Extensions;
 using System.Reflection;
+using Microsoft.Extensions.Options;
 
 namespace MikyM.Common.Application.CommandHandlers.Helpers;
 
@@ -20,8 +21,10 @@ public static class DependancyInjectionExtensions
     {
         var config = new CommandHandlerConfiguration(applicationConfiguration);
         configuration?.Invoke(config);
-
+        
         var builder = applicationConfiguration.Builder;
+
+        builder.Register(x => config).As<IOptions<CommandHandlerConfiguration>>().SingleInstance();
 
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {

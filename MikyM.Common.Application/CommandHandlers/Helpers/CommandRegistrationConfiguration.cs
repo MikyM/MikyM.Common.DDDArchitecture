@@ -1,9 +1,11 @@
-﻿namespace MikyM.Common.Application.CommandHandlers.Helpers;
+﻿using Microsoft.Extensions.Options;
+
+namespace MikyM.Common.Application.CommandHandlers.Helpers;
 
 /// <summary>
 /// Command handler options
 /// </summary>
-public sealed class CommandHandlerConfiguration
+public sealed class CommandHandlerConfiguration : IOptions<CommandHandlerConfiguration>
 {
 
     internal CommandHandlerConfiguration(ApplicationConfiguration config)
@@ -17,4 +19,7 @@ public sealed class CommandHandlerConfiguration
     /// Gets or sets the default lifetime for base generic data services
     /// </summary>
     public Lifetime DefaultLifetime { get; set; } = Lifetime.InstancePerLifetimeScope;
+
+    /// <inheritdoc />
+    public CommandHandlerConfiguration Value => this;
 }
