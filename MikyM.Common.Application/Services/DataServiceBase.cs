@@ -53,7 +53,7 @@ public abstract class DataServiceBase<TContext> : IDataServiceBase<TContext> whe
     /// <inheritdoc />
     public virtual async Task<Result> BeginTransactionAsync()
     {
-        await UnitOfWork.UseTransaction();
+        await UnitOfWork.UseTransactionAsync();
         return Result.FromSuccess();
     }
 
