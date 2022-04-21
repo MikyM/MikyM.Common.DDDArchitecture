@@ -13,15 +13,15 @@ public static class DependancyInjectionExtensions
     /// <summary>
     /// Registers command handlers with the <see cref="ContainerBuilder"/>
     /// </summary>
-    /// <param name="applicationOptions">Current instance of <see cref="ApplicationOptions"/></param>
-    /// <param name="configuration">Optional <see cref="CommandHandlerOptions"/> configuration </param>
-    /// <returns>Current <see cref="ApplicationOptions"/> instance</returns>
-    public static ApplicationOptions AddCommandHandlers(this ApplicationOptions applicationOptions, Action<CommandHandlerOptions>? configuration = null)
+    /// <param name="applicationConfiguration">Current instance of <see cref="ApplicationConfiguration"/></param>
+    /// <param name="configuration">Optional <see cref="CommandHandlerConfiguration"/> configuration </param>
+    /// <returns>Current <see cref="ApplicationConfiguration"/> instance</returns>
+    public static ApplicationConfiguration AddCommandHandlers(this ApplicationConfiguration applicationConfiguration, Action<CommandHandlerConfiguration>? configuration = null)
     {
-        var config = new CommandHandlerOptions(applicationOptions);
+        var config = new CommandHandlerConfiguration(applicationConfiguration);
         configuration?.Invoke(config);
 
-        var builder = applicationOptions.Builder;
+        var builder = applicationConfiguration.Builder;
 
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
@@ -302,6 +302,6 @@ public static class DependancyInjectionExtensions
 
         builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>().InstancePerLifetimeScope();
 
-        return applicationOptions;
+        return applicationConfiguration;
     }
 }

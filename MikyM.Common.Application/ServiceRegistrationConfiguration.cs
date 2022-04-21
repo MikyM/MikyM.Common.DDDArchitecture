@@ -3,14 +3,14 @@
 /// <summary>
 /// Registration extension configuration
 /// </summary>
-public sealed class ServiceApplicationOptions
+public sealed class ServiceApplicationConfiguration
 {
-    internal ServiceApplicationOptions(ApplicationOptions config)
+    internal ServiceApplicationConfiguration(ApplicationConfiguration config)
     {
         Config = config;
     }
 
-    internal ApplicationOptions Config { get; set; }
+    internal ApplicationConfiguration Config { get; set; }
     /// <summary>
     /// Gets or sets the default lifetime for base generic data services
     /// </summary>
@@ -29,23 +29,23 @@ public sealed class ServiceApplicationOptions
 
     /// <summary>
     /// Marks an interceptor of a given type to be used for intercepting base data services.
-    /// Please note you must also add this interceptor using <see cref="ApplicationOptions.AddInterceptor{T}"/>
+    /// Please note you must also add this interceptor using <see cref="ApplicationConfiguration.AddInterceptor{T}"/>
     /// </summary>
     /// <param name="interceptor">Type of the interceptor</param>
     /// <param name="configuration">Interceptor configuration</param>
-    /// <returns>Current instance of the <see cref="ServiceApplicationOptions"/></returns>
-    public ServiceApplicationOptions AddDataServiceInterceptor(Type interceptor, DataInterceptorConfiguration configuration = DataInterceptorConfiguration.CrudAndReadOnly)
+    /// <returns>Current instance of the <see cref="ServiceApplicationConfiguration"/></returns>
+    public ServiceApplicationConfiguration AddDataServiceInterceptor(Type interceptor, DataInterceptorConfiguration configuration = DataInterceptorConfiguration.CrudAndReadOnly)
     {
         DataInterceptors.TryAdd(interceptor ?? throw new ArgumentNullException(nameof(interceptor)), configuration);
         return this;
     }
     /// <summary>
     /// Marks an interceptor of a given type to be used for intercepting base data services.
-    /// Please note you must also add this interceptor using <see cref="ApplicationOptions.AddInterceptor{T}"/>
+    /// Please note you must also add this interceptor using <see cref="ApplicationConfiguration.AddInterceptor{T}"/>
     /// </summary>
     /// <param name="configuration">Interceptor configuration</param>
-    /// <returns>Current instance of the <see cref="ServiceApplicationOptions"/></returns>
-    public ServiceApplicationOptions AddDataServiceInterceptor<T>(DataInterceptorConfiguration configuration = DataInterceptorConfiguration.CrudAndReadOnly) where T : notnull
+    /// <returns>Current instance of the <see cref="ServiceApplicationConfiguration"/></returns>
+    public ServiceApplicationConfiguration AddDataServiceInterceptor<T>(DataInterceptorConfiguration configuration = DataInterceptorConfiguration.CrudAndReadOnly) where T : notnull
     {
         DataInterceptors.TryAdd(typeof(T), configuration);
         return this;
@@ -54,8 +54,8 @@ public sealed class ServiceApplicationOptions
     /// <summary>
     /// Configures attribute services registration options
     /// </summary>
-    /// <returns>Current instance of the <see cref="ServiceApplicationOptions"/></returns>
-    public ServiceApplicationOptions ConfigureAttributeServices(Action<AttributeRegistrationOptions> action)
+    /// <returns>Current instance of the <see cref="ServiceApplicationConfiguration"/></returns>
+    public ServiceApplicationConfiguration ConfigureAttributeServices(Action<AttributeRegistrationOptions> action)
     {
         AttributeOptions = action;
         return this;

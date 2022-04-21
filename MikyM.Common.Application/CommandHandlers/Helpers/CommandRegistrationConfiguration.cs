@@ -3,15 +3,15 @@
 /// <summary>
 /// Command handler options
 /// </summary>
-public sealed class CommandHandlerOptions
+public sealed class CommandHandlerConfiguration
 {
 
-    internal CommandHandlerOptions(ApplicationOptions config)
+    internal CommandHandlerConfiguration(ApplicationConfiguration config)
     {
         Config = config;
     }
 
-    internal ApplicationOptions Config { get; set; }
+    internal ApplicationConfiguration Config { get; set; }
 
     /// <summary>
     /// Gets or sets the default lifetime for base generic data services

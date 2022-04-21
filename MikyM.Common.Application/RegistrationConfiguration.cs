@@ -7,11 +7,11 @@ namespace MikyM.Common.Application;
 /// <summary>
 /// Registration extension configuration
 /// </summary>
-public sealed class ApplicationOptions
+public sealed class ApplicationConfiguration
 {
     internal ContainerBuilder Builder { get; set; }
 
-    internal  ApplicationOptions(ContainerBuilder builder)
+    internal  ApplicationConfiguration(ContainerBuilder builder)
     {
         this.Builder = builder;
     }
@@ -20,8 +20,8 @@ public sealed class ApplicationOptions
     /// Registers an interceptor with <see cref="ContainerBuilder"/>
     /// </summary>
     /// <param name="factoryMethod">Factory method for the registration</param>
-    /// <returns>Current instance of the <see cref="ApplicationOptions"/></returns>
-    public ApplicationOptions AddInterceptor<T>(Func<IComponentContext, T> factoryMethod) where T : notnull
+    /// <returns>Current instance of the <see cref="ApplicationConfiguration"/></returns>
+    public ApplicationConfiguration AddInterceptor<T>(Func<IComponentContext, T> factoryMethod) where T : notnull
     {
         Builder.Register(factoryMethod);
 
@@ -31,8 +31,8 @@ public sealed class ApplicationOptions
     /// <summary>
     /// Registers an async executor with the container
     /// </summary>
-    /// <returns>Current instance of the <see cref="ApplicationOptions"/></returns>
-    public ApplicationOptions AddAsyncExecutor()
+    /// <returns>Current instance of the <see cref="ApplicationConfiguration"/></returns>
+    public ApplicationConfiguration AddAsyncExecutor()
     {
         Builder.AddAsyncExecutor();
         return this;

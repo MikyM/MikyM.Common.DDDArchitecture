@@ -20,8 +20,8 @@ public static class DependancyInjectionExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="options">Configuration options</param>
-    /// <returns>Current <see cref="ApplicationOptions"/> instance</returns>
-    public static ContainerBuilder AddApplicationLayer(this ContainerBuilder builder, Action<ApplicationOptions> options)
+    /// <returns>Current <see cref="ApplicationConfiguration"/> instance</returns>
+    public static ContainerBuilder AddApplicationLayer(this ContainerBuilder builder, Action<ApplicationConfiguration> options)
     {
         // register automapper
         builder.RegisterAutoMapper(opt => opt.AddExpressionMapping(), false, AppDomain.CurrentDomain.GetAssemblies());
@@ -29,7 +29,7 @@ public static class DependancyInjectionExtensions
         builder.RegisterGeneric(typeof(AsyncInterceptorAdapter<>));
         //register async interceptor
 
-        var config = new ApplicationOptions(builder);
+        var config = new ApplicationConfiguration(builder);
         config.AddInterceptor(x =>
             new LoggingInterceptor(x.Resolve<ILoggerFactory>().CreateLogger(nameof(LoggingInterceptor))));
 
@@ -41,14 +41,14 @@ public static class DependancyInjectionExtensions
     /// <summary>
     /// Registers services with the <see cref="ContainerBuilder"/>
     /// </summary>
-    /// <param name="applicationOptions"></param>
+    /// <param name="applicationConfiguration"></param>
     /// <param name="options">Configuration action</param>
-    /// <returns>Current <see cref="ApplicationOptions"/> instance</returns>
-    public static ApplicationOptions AddServices(this ApplicationOptions applicationOptions, Action<ServiceApplicationOptions>? options = null)
+    /// <returns>Current <see cref="ApplicationConfiguration"/> instance</returns>
+    public static ApplicationConfiguration AddServices(this ApplicationConfiguration applicationConfiguration, Action<ServiceApplicationConfiguration>? options = null)
     {
-        var builder = applicationOptions.Builder;
+        var builder = applicationConfiguration.Builder;
 
-        var config = new ServiceApplicationOptions(applicationOptions);
+        var config = new ServiceApplicationConfiguration(applicationConfiguration);
         options?.Invoke(config);
 
         builder.AddAttributeDefinedServices(config.AttributeOptions);
@@ -316,6 +316,6 @@ public static class DependancyInjectionExtensions
             }
         }
         
-        return applicationOptions;
+        return applicationConfiguration;
     }
 }
