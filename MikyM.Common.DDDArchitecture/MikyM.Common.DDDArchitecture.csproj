@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MikyM.Common.ApplicationLayer" Version="1.0.7" />
+    <PackageReference Include="MikyM.Common.ApplicationLayer" Version="1.2.0" />
   </ItemGroup>
 
 </Project>
