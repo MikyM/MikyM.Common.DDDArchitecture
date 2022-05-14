@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 	  <PackageId>MikyM.Common.DDDArchitecture</PackageId>
-	  <Version>2.0.1</Version>
+	  <Version>2.0.2</Version>
 	  <Authors>Krzysztof Kupisz</Authors>
 	  <PackageDescription>Re-usable Domain Driven Design architecture based on both EfCore and MongoDb application layer packages providing generic CRUD services, attribute based registrations and other common utilities.</PackageDescription>
 	  <RepositoryUrl>https://github.com/MikyM/MikyM.Common.DDDArchitecture</RepositoryUrl>
@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MikyM.Common.EfCore.ApplicationLayer" Version="1.0.6" />
-    <PackageReference Include="MikyM.Common.MongoDb.ApplicationLayer" Version="1.0.1" />
+    <PackageReference Include="MikyM.Common.EfCore.ApplicationLayer" Version="1.0.7" />
+    <PackageReference Include="MikyM.Common.MongoDb.ApplicationLayer" Version="1.0.2" />
   </ItemGroup>
 
 </Project>
